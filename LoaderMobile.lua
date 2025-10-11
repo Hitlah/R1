@@ -77,25 +77,28 @@ local Window = Fluent:CreateWindow({
 
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 ScreenGui.Name = "ALS_ToggleIcon"
+
 local ImageButton = Instance.new("ImageButton", ScreenGui)
 ImageButton.Size = UDim2.new(0, 50, 0, 50)
-ImageButton.Position = UDim2.new(0, 20, 0, 200)
+ImageButton.Position = UDim2.new(0.5, -25, 0.5, -25)
+ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
 ImageButton.BackgroundTransparency = 1
 ImageButton.Image = "rbxassetid://72399447876912"
 ImageButton.Active = true
-ImageButton.Draggable = true
+ImageButton.Draggable = false
 
 local isVisible = true
+
 ImageButton.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    Window:SetVisible(isVisible)
+	isVisible = not isVisible
+	Window:SetVisible(isVisible)
 end)
 
 game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.LeftControl then
-        isVisible = not isVisible
-        Window:SetVisible(isVisible)
-    end
+	if not processed and input.KeyCode == Enum.KeyCode.LeftControl then
+		isVisible = not isVisible
+		Window:SetVisible(isVisible)
+	end
 end)
 
 local Tabs = {
