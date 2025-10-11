@@ -85,7 +85,7 @@ ImageButton.AnchorPoint = Vector2.new(0, 0)
 ImageButton.BackgroundTransparency = 1
 ImageButton.Image = "rbxassetid://72399447876912"
 ImageButton.Active = true
-ImageButton.Draggable = false
+ImageButton.Draggable = true
 
 local isVisible = true
 
