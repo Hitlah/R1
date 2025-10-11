@@ -75,35 +75,30 @@ local Window = Fluent:CreateWindow({
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
-local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-ScreenGui.Name = "ALS_ToggleIcon"
+local logoGui = Instance.new("ScreenGui")
+logoGui.Name = "Toggle"
+logoGui.ResetOnSpawn = false
+logoGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+logoGui.Parent = player:WaitForChild("PlayerGui")
 
-local ImageButton = Instance.new("ImageButton", ScreenGui)
-ImageButton.Size = UDim2.new(0, 50, 0, 50)
-ImageButton.Position = UDim2.new(0, 20, 0, 20)
-ImageButton.AnchorPoint = Vector2.new(0, 0)
-ImageButton.BackgroundTransparency = 1
-ImageButton.Image = "rbxassetid://72399447876912"
-ImageButton.Active = true
-ImageButton.Draggable = false
+local logoButton = Instance.new("ImageButton")
+logoButton.Name = "LogoButton"
+logoButton.Size = UDim2.new(0, 50, 0, 50)
+logoButton.Position = UDim2.new(0, 10, 0, 10)
+logoButton.BackgroundTransparency = 1
+logoButton.Image = "rbxassetid://72399447876912"
+logoButton.Parent = logoGui
 
-local isVisible = true
-
-local function toggleUI()
-	isVisible = not isVisible
-	if isVisible then
-		Window:SelectTab(1)
-	else
-		Window:Minimize()
-	end
+local isMinimized = false
+local function toggleFluent()
+    isMinimized = not isMinimized
+    Window:Minimize(isMinimized)
 end
-
-ImageButton.MouseButton1Click:Connect(toggleUI)
-
-game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
-	if not processed and input.KeyCode == Enum.KeyCode.LeftControl then
-		toggleUI()
-	end
+logoButton.Activated:Connect(toggleFluent)
+UserInputService.InputBegan:Connect(function(input, gpe)
+    if not gpe and input.KeyCode == Enum.KeyCode.LeftControl then
+        toggleFluent()
+    end
 end)
 
 local Tabs = {
