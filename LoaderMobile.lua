@@ -215,6 +215,30 @@ AutoEventToggle:OnChanged(function()
     end
 end)
 
+local AutoFastRetryToggle = Tabs.AutoEvent:AddToggle("AutoFastRetryToggle", {
+    Title = "Auto Fast Retry",
+    Description = "Faster And Better auto replay",
+    Default = getgenv().Config.toggles.AutoFastRetryToggle or false
+})
+
+AutoFastRetryToggle:OnChanged(function()
+    getgenv().AutoFastRetryEnabled = Options.AutoFastRetryToggle.Value
+    getgenv().Config.toggles.AutoFastRetryToggle = Options.AutoFastRetryToggle.Value
+    saveConfig(getgenv().Config)
+    if getgenv().AutoFastRetryEnabled then
+        Fluent:Notify({
+            Title = "Auto Fast Retry",
+            Content = "Enabled!",
+            Duration = 3
+        })
+    else
+        Fluent:Notify({
+            Title = "Auto Fast Retry",
+            Content = "Disabled!",
+            Duration = 3
+        })
+    end
+end)
 
 Tabs.AutoAbility:AddParagraph({
     Title = "Auto Ability System",
@@ -1068,6 +1092,57 @@ task.spawn(function()
             end
         end
         
+        if Fluent.Unloaded then break end
+    end
+end)
+
+task.spawn(function()
+    local p = game:GetService("Players").LocalPlayer
+    local v = game:GetService("VirtualInputManager")
+    local g = game:GetService("GuiService")
+    local rs = game:GetService("ReplicatedStorage")
+    local seen = false
+
+    local function press(k)
+        v:SendKeyEvent(true, k, false, game)
+        task.wait(0.1)
+        v:SendKeyEvent(false, k, false, game)
+    end
+
+    while true do
+        task.wait(1)
+
+        if getgenv().AutoFastRetryEnabled then
+            pcall(function()
+                local s = p:WaitForChild("PlayerGui"):WaitForChild("Settings")
+                local a = s:WaitForChild("AutoReady")
+
+                if a.Value == true then
+                    rs.Remotes.SetSettings:InvokeServer("AutoReady")
+                end
+
+                local e = p.PlayerGui:FindFirstChild("EndGameUI")
+                if e and e:FindFirstChild("BG") then
+                    seen = true
+                    local r = e.BG.Buttons:FindFirstChild("Retry")
+                    if r then
+                        g.SelectedObject = r
+                        repeat
+                            press(Enum.KeyCode.Return)
+                            task.wait(0.5)
+                        until not p.PlayerGui:FindFirstChild("EndGameUI")
+                        g.SelectedObject = nil
+                    end
+                elseif g.SelectedObject ~= nil then
+                    g.SelectedObject = nil
+                end
+
+                if seen and not a.Value then
+                    rs.Remotes.SetSettings:InvokeServer("AutoReady")
+                end
+            end)
+        end
+
         if Fluent.Unloaded then break end
     end
 end)
