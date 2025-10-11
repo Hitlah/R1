@@ -108,7 +108,7 @@ end)
 
 local Tabs = {
     AutoEvent = Window:AddTab({ Title = "Auto Event", Icon = "calendar" }),
-    AutoAbility = Window:AddTab({ Title = "Auto Ability", Icon = "zap" }),
+    AutoAbility = Window:AddTab({ Title = "Auto Ability", Icon = "bot" }),
     CardSelection = Window:AddTab({ Title = "Card Selection", Icon = "layers" }),
     BossRush = Window:AddTab({ Title = "Boss Rush", Icon = "trophy" }),
     Webhook = Window:AddTab({ Title = "Webhook", Icon = "send" }),
