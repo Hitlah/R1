@@ -912,6 +912,7 @@ end)
 
 local FPSBoostToggle = Tabs.Misc:AddToggle("FPSBoostToggle", {
 	Title = "FPS Boost",
+	Description = "Removing all texture and part possible (not done)",
 	Default = getgenv().Config.toggles.FPSBoost or false
 })
 
