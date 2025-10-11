@@ -910,6 +910,30 @@ RemoveEnemiesToggle:OnChanged(function()
     end
 end)
 
+local FPSBoostToggle = Tabs.Misc:AddToggle("FPSBoostToggle", {
+	Title = "FPS Boost",
+	Default = getgenv().Config.toggles.FPSBoost or false
+})
+
+FPSBoostToggle:OnChanged(function()
+	getgenv().FPSEnabled = Options.FPSBoostToggle.Value
+	getgenv().Config.toggles.FPSBoostToggle = Options.FPSBoostToggle.Value
+	saveConfig(getgenv().Config)
+	if getgenv().FPSEnabled then
+		Fluent:Notify({
+			Title = "Boost FPS",
+			Content = "Removing Started!",
+			Duration = 3
+		})
+	else
+		Fluent:Notify({
+			Title = "Boost FPS",
+			Content = "Rejoin To Apply Change!",
+			Duration = 3
+		})
+	end
+end)
+
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
@@ -960,6 +984,63 @@ task.spawn(function()
         if Fluent.Unloaded then break end
     end
 end)
+
+if getgenv().Config.toggles.FPSBoostToggle then
+	local function clearLighting()
+		local lighting = game:GetService("Lighting")
+		for _, child in ipairs(lighting:GetChildren()) do
+			child:Destroy()
+		end
+		lighting.Ambient = Color3.new(1, 1, 1)
+		lighting.Brightness = 1
+		lighting.GlobalShadows = false
+		lighting.FogEnd = 100000
+		lighting.FogStart = 100000
+		lighting.ClockTime = 12
+		lighting.GeographicLatitude = 0
+	end
+
+	local function removeTextures()
+		for _, obj in ipairs(game.Workspace:GetDescendants()) do
+			if obj:IsA("BasePart") then
+				if obj:IsA("Part") or obj:IsA("MeshPart") or obj:IsA("WedgePart") or obj:IsA("CornerWedgePart") then
+					obj.Material = Enum.Material.SmoothPlastic
+					if obj:FindFirstChildOfClass("Texture") then
+						for _, texture in ipairs(obj:GetChildren()) do
+							if texture:IsA("Texture") then
+								texture:Destroy()
+							end
+						end
+					end
+					if obj:IsA("MeshPart") then
+						obj.TextureID = ""
+					end
+				end
+				if obj:IsA("Decal") then
+					obj:Destroy()
+				end
+			end
+			if obj:IsA("SurfaceAppearance") then
+				obj:Destroy()
+			end
+		end
+	end
+
+	local function clearNonModelsInMap()
+		local mapPath = game.Workspace:FindFirstChild("Map") and game.Workspace.Map:FindFirstChild("Map")
+		if mapPath then
+			for _, child in ipairs(mapPath:GetChildren()) do
+				if not child:IsA("Model") then
+					child:Destroy()
+				end
+			end
+		end
+	end
+
+	clearLighting()
+	removeTextures()
+	clearNonModelsInMap()
+end
 
 task.spawn(function()
     while true do
