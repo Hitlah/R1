@@ -110,7 +110,7 @@ for name, priority in pairs(BossRushGeneral) do getgenv().BossRushCardPriority[n
 
 -- Create Sections
 local WelcomeSection = Window:Section({
-    Title = "Welcome",
+    Title = "Update/Change",
     Icon = "home"
 })
 
