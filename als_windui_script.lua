@@ -40,7 +40,7 @@ local Window = WindUI:CreateWindow({
         Enabled = true,
         Draggable = true,
         Color = ColorSequence.new(
-            Color3.fromHex("##FF0E60"),
+            Color3.fromHex("#FF0E60"),
             Color3.fromHex("#F7931E")
         )
     }
