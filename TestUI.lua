@@ -140,64 +140,18 @@ WhatsNewTab:Section({
     TextSize = 24,
 })
 
-WhatsNewTab:Section({
-    Title = "Welcome to ALS Halloween Event Script!",
-    TextSize = 18,
-})
-
-WhatsNewTab:Space({ Columns = 2 })
+WhatsNewTab:Space({ Columns = 1 })
 
 WhatsNewTab:Section({
-    Title = [[This script has been converted from Fluent UI to WindUI for a better, more modern experience.
-All features from the original script have been preserved and improved!]],
-    TextSize = 16,
-})
-
-WhatsNewTab:Space({ Columns = 3 })
-
-WhatsNewTab:Section({
-    Title = "📋 Update Log",
+    Title = "Change Log",
     TextSize = 20,
 })
 
 WhatsNewTab:Section({
-    Title = [[Version 2.0 - WindUI Conversion
+    Title = [[Test
 ━━━━━━━━━━━━━━━━━━━━
-
-✨ NEW FEATURES:
-• Converted to WindUI library for better performance
-• Improved UI organization with better sections
-• Modern and cleaner interface design
-• Better config management system
-• Enhanced notification system
-
-🔧 IMPROVEMENTS:
-• Optimized Auto Ability system
-• Better card selection algorithm
-• Improved FPS boost performance
-• Enhanced webhook integration
-• Better error handling
-
-🎯 FEATURES INCLUDED:
-• Auto Event Join
-• Auto Abilities with conditions
-• Card Selection (Candy Cards, Devil's Sacrifice, Other Cards)
-• Boss Rush Card Selection
-• Discord Webhook Integration
-• Seamless Retry Bug Fix
-• Auto Bingo (stamps & rewards)
-• Auto Capsules (buy & open)
-• Remove Enemies/Spawned Units
-• FPS Boost
-• Anti-AFK
-• Black Screen
-• Auto Rejoin
-
-⚠️ IMPORTANT NOTES:
-• Use at your own risk
-• May violate Roblox ToS
-• Consider using an alt account
-• Report bugs to the developer]],
+Idk What to add
+]],
     TextSize = 14,
 })
 
