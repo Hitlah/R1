@@ -29,12 +29,12 @@ getgenv().UnitAbilities = {}
 
 -- Create Window
 local Window = WindUI:CreateWindow({
-    Title = "ALS Halloween Event",
+    Title = "Additional Script",
     Author = "Anime Last Stand Script",
     Folder = "ALSHalloweenEvent",
     
     OpenButton = {
-        Title = "Open ALS Hub",
+        Title = "Open Tab",
         CornerRadius = UDim.new(0.5, 0),
         StrokeThickness = 2,
         Enabled = true,
