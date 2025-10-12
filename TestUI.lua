@@ -726,6 +726,84 @@ MiscTab:Toggle({
     end
 })
 
+do -- Config tab
+    -- Create Config Section/Tab
+    local ConfigSection = Window:Section({
+        Title = "Config",
+        Icon = "folder",
+    })
+
+    local ConfigTab = ConfigSection:Tab({
+        Title = "Config",
+        Icon = "folder",
+    })
+
+    -- Config Manager and initial name
+    local ConfigManager = Window.ConfigManager
+    local ConfigName = "default"
+
+    -- Input for config name
+    local ConfigNameInput = ConfigTab:Input({
+        Title = "Config Name",
+        Icon = "file-cog",
+        Callback = function(value)
+            ConfigName = value
+        end
+    })
+
+    -- Dropdown with all config files
+    local AllConfigs = ConfigManager:AllConfigs()
+    local DefaultValue = table.find(AllConfigs, ConfigName) and ConfigName or nil
+    ConfigTab:Dropdown({
+        Title = "All Configs",
+        Desc = "Select existing configs",
+        Values = AllConfigs,
+        Value = DefaultValue,
+        Callback = function(value)
+            ConfigName = value
+            ConfigNameInput:Set(value)
+        end
+    })
+
+    ConfigTab:Space()
+
+    -- Save Button
+    ConfigTab:Button({
+        Title = "Save Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Save() then
+                WindUI:Notify({
+                    Title = "Config Saved",
+                    Desc = "Config '" .. ConfigName .. "' saved",
+                    Icon = "check",
+                })
+            end
+        end
+    })
+
+    ConfigTab:Space()
+
+    -- Load Button
+    ConfigTab:Button({
+        Title = "Load Config",
+        Icon = "",
+        Justify = "Center",
+        Callback = function()
+            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
+            if Window.CurrentConfig:Load() then
+                WindUI:Notify({
+                    Title = "Config Loaded",
+                    Desc = "Config '" .. ConfigName .. "' loaded",
+                    Icon = "refresh-cw",
+                })
+            end
+        end
+    })
+end
+
 if not isInLobby then
     MiscTab:Toggle({
         Flag = "FPSBoostToggle",
@@ -1744,83 +1822,3 @@ task.spawn(function()
         end
     end
 end)
-
--- Config Auto Save System
-local ConfigManager = Window.ConfigManager
-local ConfigName = "AutoSaveConfig"
-
--- Load saved config on startup
-task.spawn(function()
-    task.wait(1)
-    Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
-    if Window.CurrentConfig:Load() then
-        WindUI:Notify({
-            Title = "Config Loaded",
-            Content = "Your previous settings have been restored!",
-            Icon = "refresh-cw"
-        })
-    end
-end)
-
--- Auto Save function
-local function AutoSave()
-    task.spawn(function()
-        if not Window.CurrentConfig then
-            Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
-        end
-        Window.CurrentConfig:Save()
-    end)
-end
-
--- Hook all WindUI callbacks to autosave
-local oldToggle = WindUI.Elements.Toggle
-local oldInput = WindUI.Elements.Input
-local oldDropdown = WindUI.Elements.Dropdown
-
--- Patch Toggle
-WindUI.Elements.Toggle = function(...)
-    local args = {...}
-    local options = args[2]
-    if options and type(options.Callback) == "function" then
-        local original = options.Callback
-        options.Callback = function(...)
-            original(...)
-            AutoSave()
-        end
-    end
-    return oldToggle(...)
-end
-
--- Patch Input
-WindUI.Elements.Input = function(...)
-    local args = {...}
-    local options = args[2]
-    if options and type(options.Callback) == "function" then
-        local original = options.Callback
-        options.Callback = function(...)
-            original(...)
-            AutoSave()
-        end
-    end
-    return oldInput(...)
-end
-
--- Patch Dropdown
-WindUI.Elements.Dropdown = function(...)
-    local args = {...}
-    local options = args[2]
-    if options and type(options.Callback) == "function" then
-        local original = options.Callback
-        options.Callback = function(...)
-            original(...)
-            AutoSave()
-        end
-    end
-    return oldDropdown(...)
-end
-
-WindUI:Notify({
-    Title = "Auto Save",
-    Content = "Config auto-save system initialized!",
-    Icon = "save"
-})
