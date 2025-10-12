@@ -149,51 +149,9 @@ WhatsNewTab:Section({
 
 WhatsNewTab:Section({
     Title = [[Test
-━━━━━━━━━━━━━━━━━━━━
-Idk What to add
+- Added Sucking My Dick
 ]],
     TextSize = 14,
-})
-
-WhatsNewTab:Space({ Columns = 2 })
-
-WhatsNewTab:Button({
-    Title = "Join Discord Server",
-    Icon = "message-circle",
-    Justify = "Center",
-    Color = Color3.fromHex("#5865F2"),
-    Callback = function()
-        if setclipboard then
-            setclipboard("https://discord.gg/YOUR_INVITE_CODE")
-            WindUI:Notify({
-                Title = "Discord",
-                Content = "Discord invite copied to clipboard!",
-                Icon = "check"
-            })
-        else
-            WindUI:Notify({
-                Title = "Discord",
-                Content = "setclipboard not supported by your executor!",
-                Icon = "alert-triangle"
-            })
-        end
-    end
-})
-
-WhatsNewTab:Space({ Columns = 1 })
-
-WhatsNewTab:Button({
-    Title = "Support the Developer",
-    Icon = "heart",
-    Justify = "Center",
-    Color = Color3.fromHex("#FF0E60"),
-    Callback = function()
-        WindUI:Notify({
-            Title = "Thank You!",
-            Content = "Your support means everything! ❤️",
-            Icon = "heart"
-        })
-    end
 })
 
 -- Auto Event Tab
