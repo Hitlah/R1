@@ -140,8 +140,6 @@ WhatsNewTab:Section({
     TextSize = 24,
 })
 
-WhatsNewTab:Space({ Columns = 1 })
-
 WhatsNewTab:Section({
     Title = "Change Log",
     TextSize = 20,
