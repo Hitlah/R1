@@ -83,7 +83,7 @@ predictionLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
 predictionLabel.Font = Enum.Font.GothamBold
 predictionLabel.TextSize = 16
 predictionLabel.TextXAlignment = Enum.TextXAlignment.Left
-predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+predictionLabel.Text = "📊 Calculator: 0 after " .. MAX_RESTARTS .. " restarts"
 predictionLabel.Parent = frame
 
 local inputFrame = Instance.new("Frame")
@@ -127,7 +127,7 @@ setButton.MouseButton1Click:Connect(function()
     local newValue = tonumber(inputBox.Text)
     if newValue and newValue > 0 then
         MAX_RESTARTS = newValue
-        predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+        predictionLabel.Text = "📊 Calculator: 0 after " .. MAX_RESTARTS .. " restarts"
         writefile("restart_value.txt", tostring(MAX_RESTARTS))
         setButton.Text = "Saved!"
         task.wait(1)
@@ -144,7 +144,7 @@ if isfile("restart_value.txt") then
     if savedValue and savedValue > 0 then
         MAX_RESTARTS = savedValue
         inputBox.Text = tostring(MAX_RESTARTS)
-        predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+        predictionLabel.Text = "📊 Calculator: 0 after " .. MAX_RESTARTS .. " restarts"
     end
 end
 
