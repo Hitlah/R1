@@ -1,0 +1,218 @@
+local p = game:GetService("Players").LocalPlayer
+local Folder = p:WaitForChild("PlayerGui")
+local waveLabel = Folder.MainUI.Top.Wave.Value
+local cookiesLabel = Folder.CandyBowlDefenseHUD.TopLeftCurrencies.Frame.TextLabel
+
+local MAX_RESTARTS = 5
+
+local canCount = false
+local startTime = nil
+local startCookies = 0
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "TimeGui"
+gui.ResetOnSpawn = false
+gui.Parent = Folder
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 450, 0, 180)
+frame.Position = UDim2.new(0.5, -225, 0.5, -90)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+frame.BorderSizePixel = 0
+frame.Visible = true
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local gradient = Instance.new("UIGradient")
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 20, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 40))
+}
+gradient.Rotation = 45
+gradient.Parent = frame
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 15)
+corner.Parent = frame
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(100, 50, 150)
+stroke.Thickness = 2
+stroke.Transparency = 0.3
+stroke.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -30, 0, 35)
+title.Position = UDim2.new(0, 15, 0, 10)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 200, 255)
+title.Font = Enum.Font.FredokaOne
+title.TextSize = 22
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Text = "⏳ Waiting for restart"
+title.Parent = frame
+
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Size = UDim2.new(1, -30, 0, 25)
+timeLabel.Position = UDim2.new(0, 15, 0, 50)
+timeLabel.BackgroundTransparency = 1
+timeLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
+timeLabel.Font = Enum.Font.GothamBold
+timeLabel.TextSize = 18
+timeLabel.TextXAlignment = Enum.TextXAlignment.Left
+timeLabel.Text = "⏱️ Time: 00:00"
+timeLabel.Parent = frame
+
+local cookiesGainedLabel = Instance.new("TextLabel")
+cookiesGainedLabel.Size = UDim2.new(1, -30, 0, 25)
+cookiesGainedLabel.Position = UDim2.new(0, 15, 0, 80)
+cookiesGainedLabel.BackgroundTransparency = 1
+cookiesGainedLabel.TextColor3 = Color3.fromRGB(255, 220, 100)
+cookiesGainedLabel.Font = Enum.Font.GothamBold
+cookiesGainedLabel.TextSize = 18
+cookiesGainedLabel.TextXAlignment = Enum.TextXAlignment.Left
+cookiesGainedLabel.Text = "🍪 Cookies: 0"
+cookiesGainedLabel.Parent = frame
+
+local predictionLabel = Instance.new("TextLabel")
+predictionLabel.Size = UDim2.new(1, -30, 0, 25)
+predictionLabel.Position = UDim2.new(0, 15, 0, 110)
+predictionLabel.BackgroundTransparency = 1
+predictionLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
+predictionLabel.Font = Enum.Font.GothamBold
+predictionLabel.TextSize = 16
+predictionLabel.TextXAlignment = Enum.TextXAlignment.Left
+predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+predictionLabel.Parent = frame
+
+local inputFrame = Instance.new("Frame")
+inputFrame.Size = UDim2.new(1, -30, 0, 30)
+inputFrame.Position = UDim2.new(0, 15, 0, 140)
+inputFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 50)
+inputFrame.BorderSizePixel = 0
+inputFrame.Parent = frame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 8)
+inputCorner.Parent = inputFrame
+
+local inputBox = Instance.new("TextBox")
+inputBox.Size = UDim2.new(0.6, -10, 1, -10)
+inputBox.Position = UDim2.new(0, 5, 0, 5)
+inputBox.BackgroundTransparency = 1
+inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+inputBox.Font = Enum.Font.GothamBold
+inputBox.TextSize = 14
+inputBox.PlaceholderText = "Set Restart (e.g., 5)"
+inputBox.Text = tostring(MAX_RESTARTS)
+inputBox.TextXAlignment = Enum.TextXAlignment.Left
+inputBox.Parent = inputFrame
+
+local setButton = Instance.new("TextButton")
+setButton.Size = UDim2.new(0.4, -10, 1, -10)
+setButton.Position = UDim2.new(0.6, 5, 0, 5)
+setButton.BackgroundColor3 = Color3.fromRGB(100, 50, 150)
+setButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+setButton.Font = Enum.Font.GothamBold
+setButton.TextSize = 14
+setButton.Text = "Set"
+setButton.Parent = inputFrame
+
+local setCorner = Instance.new("UICorner")
+setCorner.CornerRadius = UDim.new(0, 6)
+setCorner.Parent = setButton
+
+setButton.MouseButton1Click:Connect(function()
+    local newValue = tonumber(inputBox.Text)
+    if newValue and newValue > 0 then
+        MAX_RESTARTS = newValue
+        predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+        writefile("restart_value.txt", tostring(MAX_RESTARTS))
+        setButton.Text = "Saved!"
+        task.wait(1)
+        setButton.Text = "Set"
+    else
+        setButton.Text = "Invalid!"
+        task.wait(1)
+        setButton.Text = "Set"
+    end
+end)
+
+if isfile("restart_value.txt") then
+    local savedValue = tonumber(readfile("restart_value.txt"))
+    if savedValue and savedValue > 0 then
+        MAX_RESTARTS = savedValue
+        inputBox.Text = tostring(MAX_RESTARTS)
+        predictionLabel.Text = "📊 Prediction: 0 after " .. MAX_RESTARTS .. " restarts"
+    end
+end
+
+local function getCookies()
+    local cookieText = cookiesLabel.Text:gsub(",", "")
+    return tonumber(cookieText) or 0
+end
+
+local function formatNumber(num)
+    local formatted = tostring(num)
+    while true do
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if k == 0 then break end
+    end
+    return formatted
+end
+
+waveLabel:GetPropertyChangedSignal("Text"):Connect(function()
+    local currentWave = tonumber(waveLabel.Text)
+    
+    if currentWave ~= 1 then
+        if not canCount then
+            canCount = true
+            startTime = os.time()
+            title.Text = "⏳ Waiting for restart"
+            task.wait(0)
+            startCookies = getCookies()
+            task.delay(15, function()
+                if canCount then
+                    title.Text = "⏳ Waiting for restart"
+                end
+            end)
+        end
+    end
+    
+    if currentWave == 1 and canCount then
+        if startTime then
+            local elapsed = os.time() - startTime
+            local minutes = math.floor(elapsed / 60)
+            local seconds = elapsed % 60
+            local timeStr = string.format("%02d:%02d", minutes, seconds)
+            
+            task.wait(0)
+            local endCookies = getCookies()
+            local cookiesGained = endCookies - startCookies
+            
+            if cookiesGained < 0 then
+                cookiesGained = 0
+            end
+            
+            local prediction = cookiesGained * MAX_RESTARTS
+            
+            local formattedGained = formatNumber(cookiesGained)
+            local formattedPrediction = formatNumber(prediction)
+            
+            print("Restart detected | Restarted at " .. timeStr)
+            
+            title.Text = "🔄 Game Restarted"
+            timeLabel.Text = "⏱️ Time: " .. timeStr
+            cookiesGainedLabel.Text = "🍪 Cookies: " .. formattedGained
+            predictionLabel.Text = "📊 Calculator: " .. formattedPrediction .. " after " .. MAX_RESTARTS .. " restarts"
+            
+            task.delay(15, function()
+                title.Text = "⏳ Waiting for restart"
+            end)
+        end
+        
+        canCount = false
+        startTime = nil
+    end
+end)
